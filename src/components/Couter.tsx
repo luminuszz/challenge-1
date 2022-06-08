@@ -1,4 +1,4 @@
-import { Badge, HStack, Text } from "@chakra-ui/react";
+import { HStack, Tag, Text } from "@chakra-ui/react";
 import React from "react";
 
 type CounterProps = {
@@ -11,22 +11,21 @@ const Counter: React.FC<CounterProps> = ({ color, count, description }) => {
   const currentColor = color === "blue" ? "blue.500" : "purple.500";
 
   return (
-    <HStack spacing="10px" boxSizing="content-box">
+    <HStack spacing="10px" alignItems="center">
       <Text lineHeight="17px" fontSize="md" fontWeight="bold" color={currentColor}>
         {description}
       </Text>
-      <Badge
+      <Tag
         ml="5px"
         textTransform="lowercase"
         borderRadius="full"
         textAlign="center"
-        h="19px"
         fontWeight="bold"
         bgColor="gray.400"
         color="gray.200"
       >
         {count}
-      </Badge>
+      </Tag>
     </HStack>
   );
 };

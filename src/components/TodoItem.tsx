@@ -25,7 +25,11 @@ const CustomCheckbox: FC<CheckBoxProps> = ({ isChecked, onClick }) => (
       h="20px"
       border={isChecked ? "" : "2px solid"}
       borderColor={isChecked ? "" : "blue.500"}
-      bg={isChecked ? "purple.500" : ""}
+      bg={isChecked ? "purple.700" : "transparent"}
+      _hover={{
+        bgColor: isChecked ? "purple.500" : "blue.700",
+        opacity: isChecked ? 1 : 0.8,
+      }}
     >
       {isChecked && <Image src={checkIcon} alt="check" />}
     </Flex>
