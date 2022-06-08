@@ -43,7 +43,7 @@ type TodoProps = {
 const TodoItem: FC<TodoProps> = ({ todo }) => {
   const [isChecked, setIsChecked] = useBoolean(todo.isFinished);
   const dispatch = useAppDispatch();
-  const toast = useToast({ position: "top" });
+  const toast = useToast({ position: "top-right" });
 
   const distance = useMemo(
     () =>
@@ -64,7 +64,7 @@ const TodoItem: FC<TodoProps> = ({ todo }) => {
 
   useEffect(() => {
     dispatch(toggleTodo(todo.id));
-  }, [isChecked]);
+  }, [dispatch, isChecked, todo.id]);
 
   return (
     <Box

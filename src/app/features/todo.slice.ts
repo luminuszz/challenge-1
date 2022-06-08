@@ -7,8 +7,8 @@ export type Todo = {
   id: string;
   content: string;
   isFinished: boolean;
-  createdAt: Date;
-  finishedAt: Date | null;
+  createdAt: Date | number;
+  finishedAt: Date | null | number;
 };
 
 const todoAdapter = createEntityAdapter<Todo>({
@@ -30,7 +30,7 @@ const TodoSlice = createSlice({
       if (!todo) return;
 
       todo.isFinished = !todo.isFinished;
-      todo.finishedAt = new Date();
+      todo.finishedAt = Date.now();
     },
   },
 });

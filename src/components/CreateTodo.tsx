@@ -1,5 +1,5 @@
 import plusIcon from "@assets/plus.svg";
-import { Box, Button, Image, HStack, Input, useToast } from "@chakra-ui/react";
+import { Box, Button, Image, HStack, Input, useToast, FormErrorMessage } from "@chakra-ui/react";
 import { FormEvent, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -8,18 +8,24 @@ import { useAppDispatch } from "@app/hooks/redux";
 
 const CreateTodo = () => {
   const dispath = useAppDispatch();
-  const toast = useToast({ position: "top" });
+  const toast = useToast({ position: "top-right" });
+  const [error, setError] = useState("");
 
   const [input, setInput] = useState("");
 
   const handleAddTodo = (e: FormEvent) => {
     e.preventDefault();
-    if (input.trim().length === 0) return;
+    setError("");
+
+    if (input.trim().length === 0) {
+      setError("Please, fill the input");
+      return;
+    }
 
     dispath(
       addTodo({
         content: input,
-        createdAt: new Date(),
+        createdAt: Date.now(),
         id: uuidv4(),
         finishedAt: null,
         isFinished: false,
@@ -38,6 +44,7 @@ const CreateTodo = () => {
     <Box as="form" onSubmit={handleAddTodo} w="100%" mt="-27px">
       <HStack spacing="8px" flex="1">
         <Input
+          isInvalid={!!error}
           required
           isRequired
           value={input}
@@ -49,6 +56,7 @@ const CreateTodo = () => {
           variant="solid"
           placeholder="Adicione uma nova tarefa"
         />
+        {!!error && <FormErrorMessage>{error}</FormErrorMessage>}
 
         <Button
           type="submit"
