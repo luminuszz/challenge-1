@@ -35,7 +35,7 @@ const CreateTodo = () => {
   };
 
   return (
-    <Box w="100%" mt="-27px">
+    <Box as="form" onSubmit={handleAddTodo} w="100%" mt="-27px">
       <HStack spacing="8px" flex="1">
         <Input
           required

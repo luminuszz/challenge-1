@@ -5,23 +5,28 @@ import Header from "@components/Header";
 import TodoInformation from "@components/TodoInformation";
 import TodoItem from "@components/TodoItem";
 
-const App = () => (
-  <>
-    <Header />
-    <Container mx="auto" as="main" maxW="738px" w="100%">
-      <CreateTodo />
+import { todoSelectors } from "@app/features/todo.slice";
+import { useAppSelector } from "@app/hooks/redux";
 
-      <TodoInformation />
+const App = () => {
+  const todos = useAppSelector(todoSelectors.selectAll);
 
-      {/*  <EmptyList /> */}
+  return (
+    <>
+      <Header />
+      <Container mx="auto" as="main" maxW="738px" w="100%">
+        <CreateTodo />
 
-      <VStack mt="24px" spacing="12px">
-        <TodoItem />
-        <TodoItem />
-        <TodoItem />
-      </VStack>
-    </Container>
-  </>
-);
+        <TodoInformation />
+
+        {/*  <EmptyList /> */}
+
+        <VStack mt="24px" spacing="12px" mb="30px">
+          {todos.length ? todos.map((todo) => <TodoItem key={todo.id} todo={todo} />) : <EmptyList />}
+        </VStack>
+      </Container>
+    </>
+  );
+};
 
 export default App;

@@ -1,7 +1,12 @@
 import checkIcon from "@assets/check.svg";
 import trashIcon from "@assets/trash.svg";
-import { Box, Flex, HStack, Image, Text, useBoolean } from "@chakra-ui/react";
-import { FC } from "react";
+import { Box, Flex, HStack, Image, Text, useBoolean, useToast } from "@chakra-ui/react";
+import { formatDistance } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { FC, useEffect, useMemo } from "react";
+
+import { removeTodo, Todo, toggleTodo } from "@app/features/todo.slice";
+import { useAppDispatch } from "@app/hooks/redux";
 
 type CheckBoxProps = {
   onClick: () => void;
@@ -27,24 +32,69 @@ const CustomCheckbox: FC<CheckBoxProps> = ({ isChecked, onClick }) => (
   </Box>
 );
 
-const TodoItem = () => {
-  const [isChecked, setIsChecked] = useBoolean(false);
+type TodoProps = {
+  todo: Todo;
+};
+
+const TodoItem: FC<TodoProps> = ({ todo }) => {
+  const [isChecked, setIsChecked] = useBoolean(todo.isFinished);
+  const dispatch = useAppDispatch();
+  const toast = useToast({ position: "top" });
+
+  const distance = useMemo(
+    () =>
+      formatDistance(todo.createdAt, new Date(), {
+        locale: ptBR,
+      }),
+    [todo.createdAt]
+  );
+
+  const handleRemoveTodo = () => {
+    dispatch(removeTodo(todo.id));
+
+    toast({
+      title: "Removed !",
+      status: "success",
+    });
+  };
+
+  useEffect(() => {
+    dispatch(toggleTodo(todo.id));
+  }, [isChecked]);
 
   return (
-    <Box h="72px" bgColor="gray.500" p="16px" border="1px solid" borderColor="gray.400" borderRadius="8px">
-      <HStack spacing="12px" alignItems="flex-start">
-        <CustomCheckbox onClick={setIsChecked.toggle} isChecked={isChecked} />
-        <Text
-          textDecor={isChecked ? "line-through" : "none"}
-          onClick={setIsChecked.toggle}
-          cursor="pointer"
-          color={isChecked ? "gray.300" : "gray.100"}
-          fontSize="md"
-        >
-          Integer urna interdum massa libero auctor neque turpis turpis semper. Duis vel sed fames integer.
-        </Text>
+    <Box
+      minH="72px"
+      bgColor="gray.500"
+      p="16px"
+      border="1px solid"
+      borderColor="gray.400"
+      borderRadius="8px"
+      w="100%"
+    >
+      <HStack
+        w="100%"
+        spacing="12px"
+        alignItems="flex-start"
+        justifyContent="space-between"
+        title={distance}
+      >
+        <Flex>
+          <CustomCheckbox onClick={setIsChecked.toggle} isChecked={isChecked} />
+          <Text
+            ml="16px"
+            textAlign="left"
+            textDecor={isChecked ? "line-through" : "none"}
+            onClick={setIsChecked.toggle}
+            cursor="pointer"
+            color={isChecked ? "gray.300" : "gray.100"}
+            fontSize="md"
+          >
+            {todo.content}
+          </Text>
+        </Flex>
 
-        <Image boxSize="30px" src={trashIcon} />
+        <Image boxSize="30px" src={trashIcon} cursor="pointer" onClick={handleRemoveTodo} />
       </HStack>
     </Box>
   );

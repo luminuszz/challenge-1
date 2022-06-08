@@ -8,13 +8,17 @@ import { useAppSelector } from "@app/hooks/redux";
 const TodoInformation = () => {
   const allTodosCount = useAppSelector(todoSelectors.selectTotal);
 
-  const finishTodoCont = useAppSelector(todoSelectors.selectAll).filter((todo) => todo.isFinished).length;
+  const finishedTodos = useAppSelector(todoSelectors.selectAll).filter((todo) => todo.isFinished).length;
 
   return (
     <Box w="100%" mt="64px">
       <Flex flex="1" alignItems="stretch" justifyContent="space-between">
         <Counter color="blue" count={allTodosCount} description="Tarefas criadas" />
-        <Counter color="purple" count={`${finishTodoCont} de ${allTodosCount}`} description="Concluídas" />
+        <Counter
+          color="purple"
+          count={`${finishedTodos} de ${allTodosCount}`}
+          description="Concluídas"
+        />
       </Flex>
     </Box>
   );
