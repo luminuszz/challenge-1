@@ -1,9 +1,9 @@
 import checkIcon from "@assets/check.svg";
 import trashIcon from "@assets/trash.svg";
-import { Box, Flex, HStack, Image, Text, useBoolean, useToast } from "@chakra-ui/react";
+import { Box, Flex, HStack, Image, Text, useToast } from "@chakra-ui/react";
 import { formatDistance } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { FC, useEffect, useMemo } from "react";
+import { FC, useMemo } from "react";
 
 import { removeTodo, Todo, toggleTodo } from "@app/features/todo.slice";
 import { useAppDispatch } from "@app/hooks/redux";
@@ -41,7 +41,6 @@ type TodoProps = {
 };
 
 const TodoItem: FC<TodoProps> = ({ todo }) => {
-  const [isChecked, setIsChecked] = useBoolean(todo.isFinished);
   const dispatch = useAppDispatch();
   const toast = useToast({ position: "top-right" });
 
@@ -62,9 +61,14 @@ const TodoItem: FC<TodoProps> = ({ todo }) => {
     });
   };
 
-  useEffect(() => {
+  const handleAddToggle = () => {
     dispatch(toggleTodo(todo.id));
-  }, [dispatch, isChecked, todo.id]);
+
+    toast({
+      title: "Todo finish",
+      status: "success",
+    });
+  };
 
   return (
     <Box
@@ -84,14 +88,14 @@ const TodoItem: FC<TodoProps> = ({ todo }) => {
         title={distance}
       >
         <Flex>
-          <CustomCheckbox onClick={setIsChecked.toggle} isChecked={isChecked} />
+          <CustomCheckbox onClick={handleAddToggle} isChecked={todo.isFinished} />
           <Text
             ml="16px"
             textAlign="left"
-            textDecor={isChecked ? "line-through" : "none"}
-            onClick={setIsChecked.toggle}
+            textDecor={todo.isFinished ? "line-through" : "none"}
+            onClick={handleAddToggle}
             cursor="pointer"
-            color={isChecked ? "gray.300" : "gray.100"}
+            color={todo.isFinished ? "gray.300" : "gray.100"}
             fontSize="md"
           >
             {todo.content}
