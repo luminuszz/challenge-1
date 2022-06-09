@@ -1,13 +1,14 @@
 import plusIcon from "@assets/plus.svg";
-import { Box, Button, Image, HStack, Input, useToast, FormErrorMessage } from "@chakra-ui/react";
+import { Box, Button, Image, HStack, Input, FormErrorMessage } from "@chakra-ui/react";
 import { FormEvent, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { addTodo } from "@app/features/todo.slice";
 import { useAppDispatch } from "@app/hooks/redux";
+import useToast from "@app/hooks/useToast";
 
 const CreateTodo = () => {
-  const dispath = useAppDispatch();
+  const dispatch = useAppDispatch();
   const toast = useToast({ position: "top-right" });
   const [error, setError] = useState("");
 
@@ -22,7 +23,7 @@ const CreateTodo = () => {
       return;
     }
 
-    dispath(
+    dispatch(
       addTodo({
         content: input,
         createdAt: Date.now(),
@@ -34,10 +35,7 @@ const CreateTodo = () => {
 
     setInput("");
 
-    toast({
-      title: "Todo added !",
-      status: "success",
-    });
+    toast.success("Todo added !");
   };
 
   return (

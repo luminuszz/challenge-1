@@ -30,7 +30,7 @@ const TodoSlice = createSlice({
       if (!todo) return;
 
       todo.isFinished = !todo.isFinished;
-      todo.finishedAt = Date.now();
+      todo.finishedAt = todo.isFinished ? new Date() : null;
     },
   },
 });

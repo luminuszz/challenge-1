@@ -1,12 +1,13 @@
 import checkIcon from "@assets/check.svg";
 import trashIcon from "@assets/trash.svg";
-import { Box, Flex, HStack, Image, Text, useToast } from "@chakra-ui/react";
+import { Box, Flex, HStack, Image, Text } from "@chakra-ui/react";
 import { formatDistance } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { FC, useMemo } from "react";
 
 import { removeTodo, Todo, toggleTodo } from "@app/features/todo.slice";
 import { useAppDispatch } from "@app/hooks/redux";
+import useToast from "@app/hooks/useToast";
 
 type CheckBoxProps = {
   onClick: () => void;
@@ -42,7 +43,7 @@ type TodoProps = {
 
 const TodoItem: FC<TodoProps> = ({ todo }) => {
   const dispatch = useAppDispatch();
-  const toast = useToast({ position: "top-right" });
+  const toast = useToast();
 
   const distance = useMemo(
     () =>
@@ -55,19 +56,22 @@ const TodoItem: FC<TodoProps> = ({ todo }) => {
   const handleRemoveTodo = () => {
     dispatch(removeTodo(todo.id));
 
-    toast({
-      title: "Removed !",
-      status: "success",
-    });
+    toast.success("Removed");
   };
 
   const handleAddToggle = () => {
+    const notifyLoading = toast.createLoadingToast();
+
+    notifyLoading.start("saving...");
+
+    setTimeout(() => {
+      dispatch(toggleTodo(todo.id));
+      notifyLoading.success("saved!");
+    }, 3000);
+
     dispatch(toggleTodo(todo.id));
 
-    toast({
-      title: "Todo finish",
-      status: "success",
-    });
+    toast.success("Toggled");
   };
 
   return (
